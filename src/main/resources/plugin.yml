@@ -1,0 +1,6 @@
+name: barium
+version: "0.0.1"
+main: notnekodev.barium.Barium
+api-version: "1.21"
+authors: [Nekodev]
+description: Economy plugin for Minecraft
