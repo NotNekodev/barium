@@ -1,10 +1,15 @@
 package notnekodev.barium;
 
+import notnekodev.barium.cache.CacheSyncTask;
+import notnekodev.barium.cache.PlayerCache;
 import notnekodev.barium.database.Database;
 import notnekodev.barium.listener.JoinListener;
+import notnekodev.barium.listener.QuitListener;
 import notnekodev.barium.repository.AccountRepository;
 import notnekodev.barium.repository.SQLiteAccountRepository;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,12 +49,29 @@ public final class Barium extends JavaPlugin {
         db.execute("PRAGMA busy_timeout=5000;");
         db.execute("CREATE TABLE IF NOT EXISTS accounts (uuid TEXT PRIMARY KEY, balance INTEGER NOT NULL);");
 
+        logger.info("Set up SQLite database at {}", db_path);
+
         AccountRepository accountRepository = new SQLiteAccountRepository(db);
+        PlayerCache playerCache = new PlayerCache();
 
         getServer().getPluginManager().registerEvents(
-                new JoinListener(accountRepository),
+                new JoinListener(accountRepository, playerCache),
                 this
         );
+
+        getServer().getPluginManager().registerEvents(
+                new QuitListener(accountRepository, playerCache),
+                this
+        );
+
+        logger.info("Registered events");
+
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this,
+                new CacheSyncTask(playerCache, accountRepository),
+                20L * 60 * getConfig().getInt("database.cache_sync", 1),
+                20L * 60 * getConfig().getInt("database.cache_sync", 1));
+
+        logger.info("Barium init done");
     }
 
     @Override

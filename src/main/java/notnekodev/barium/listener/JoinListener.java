@@ -1,6 +1,8 @@
 package notnekodev.barium.listener;
 
 import notnekodev.barium.Barium;
+import notnekodev.barium.cache.CachedAccount;
+import notnekodev.barium.cache.PlayerCache;
 import notnekodev.barium.model.Account;
 import notnekodev.barium.repository.AccountRepository;
 import org.bukkit.Bukkit;
@@ -12,9 +14,11 @@ import java.util.UUID;
 
 public class JoinListener implements Listener {
     private final AccountRepository repo;
+    private PlayerCache playerCache;
 
-    public JoinListener(AccountRepository repo) {
+    public JoinListener(AccountRepository repo, PlayerCache playerCache) {
         this.repo = repo;
+        this.playerCache = playerCache;
     }
 
     @EventHandler
@@ -28,6 +32,9 @@ public class JoinListener implements Listener {
                 account = new Account(uuid, Barium.getInstance().getConfig().getInt("currency.starting_balance", 500));
                 repo.save(account);
             }
+
+            CachedAccount cached = new CachedAccount(account);
+            playerCache.put(uuid, cached);
         });
 
         repo.find(uuid).thenAccept(account -> {

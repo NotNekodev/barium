@@ -5,3 +5,4 @@ currency:
 
 database:
   db_path: "data/database.db" # relative from the server run directory
+  cache_sync: 1 # defines after how many MINUTES the cache will sync to disk
