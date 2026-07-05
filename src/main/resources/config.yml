@@ -1,7 +1,7 @@
 currency:
   symbol: "$" # short symbol to identify the currency
   name: "Dollar" # long name
-  starting-balance: 500 # starting balance every new player gets
+  starting_balance: 500 # starting balance every new player gets
 
 database:
   db_path: "data/database.db" # relative from the server run directory

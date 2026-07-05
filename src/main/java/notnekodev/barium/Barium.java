@@ -1,6 +1,9 @@
 package notnekodev.barium;
 
 import notnekodev.barium.database.Database;
+import notnekodev.barium.listener.JoinListener;
+import notnekodev.barium.repository.AccountRepository;
+import notnekodev.barium.repository.SQLiteAccountRepository;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,8 +13,9 @@ import java.sql.SQLException;
 public final class Barium extends JavaPlugin {
 
     private static Barium instance;
-    public Logger logger;
     private Database db;
+
+    public Logger logger;
 
     @Override
     public void onEnable() {
@@ -34,6 +38,15 @@ public final class Barium extends JavaPlugin {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
+        db.execute("CREATE TABLE IF NOT EXISTS accounts (uuid TEXT PRIMARY KEY, balance INTEGER NOT NULL);");
+
+        AccountRepository accountRepository = new SQLiteAccountRepository(db);
+
+        getServer().getPluginManager().registerEvents(
+                new JoinListener(accountRepository),
+                this
+        );
     }
 
     @Override
