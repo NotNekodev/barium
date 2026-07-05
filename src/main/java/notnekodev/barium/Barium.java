@@ -39,6 +39,9 @@ public final class Barium extends JavaPlugin {
             throw new RuntimeException(e);
         }
 
+        db.execute("PRAGMA journal_mode=WAL;");
+        db.execute("PRAGMA synchronous=NORMAL;");
+        db.execute("PRAGMA busy_timeout=5000;");
         db.execute("CREATE TABLE IF NOT EXISTS accounts (uuid TEXT PRIMARY KEY, balance INTEGER NOT NULL);");
 
         AccountRepository accountRepository = new SQLiteAccountRepository(db);
