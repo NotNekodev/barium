@@ -4,6 +4,7 @@ import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import notnekodev.barium.cache.CacheSyncTask;
 import notnekodev.barium.cache.PlayerCache;
 import notnekodev.barium.command.AdminBalanceCommand;
+import notnekodev.barium.command.BalanceCommand;
 import notnekodev.barium.database.Database;
 import notnekodev.barium.listener.JoinListener;
 import notnekodev.barium.listener.QuitListener;
@@ -86,6 +87,9 @@ public final class Barium extends JavaPlugin {
                 commands -> {
                     commands.registrar().register(
                             AdminBalanceCommand.createCommand().build()
+                    );
+                    commands.registrar().register(
+                            BalanceCommand.createCommand().build()
                     );
                 }
         );
