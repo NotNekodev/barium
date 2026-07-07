@@ -5,6 +5,7 @@ import notnekodev.barium.cache.CacheSyncTask;
 import notnekodev.barium.cache.PlayerCache;
 import notnekodev.barium.command.AdminBalanceCommand;
 import notnekodev.barium.command.BalanceCommand;
+import notnekodev.barium.command.TransferCommand;
 import notnekodev.barium.database.Database;
 import notnekodev.barium.listener.JoinListener;
 import notnekodev.barium.listener.QuitListener;
@@ -90,6 +91,9 @@ public final class Barium extends JavaPlugin {
                     );
                     commands.registrar().register(
                             BalanceCommand.createCommand().build()
+                    );
+                    commands.registrar().register(
+                            TransferCommand.createCommand().build()
                     );
                 }
         );
