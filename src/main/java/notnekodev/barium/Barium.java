@@ -22,7 +22,7 @@ public final class Barium extends JavaPlugin {
     private static Barium instance = null;
     private Database db;
 
-    public Logger logger;
+    public static Logger LOGGER = LoggerFactory.getLogger("barium");
 
     public EconomyService economyService;
     public AccountRepository accountRepository;
@@ -36,14 +36,13 @@ public final class Barium extends JavaPlugin {
 
         instance = this;
 
-        logger = LoggerFactory.getLogger("barium");
-        logger.info("Barium enabled");
+        LOGGER.info("Barium enabled");
 
         saveDefaultConfig(); // copies the config.yml from the JAR into the server directory on first run
 
         String db_path = getConfig().getString("database.db_path");
         if (db_path == null) {
-            logger.warn("Database path is null, using default data/database.db");
+            LOGGER.warn("Database path is null, using default data/database.db");
             db_path = "data/database.db";
         }
 
@@ -59,7 +58,7 @@ public final class Barium extends JavaPlugin {
         db.execute("PRAGMA busy_timeout=5000;");
         db.execute("CREATE TABLE IF NOT EXISTS accounts (uuid TEXT PRIMARY KEY, balance INTEGER NOT NULL);");
 
-        logger.info("Set up SQLite database at {}", db_path);
+        LOGGER.info("Set up SQLite database at {}", db_path);
 
         accountRepository = new SQLiteAccountRepository(db);
         playerCache = new PlayerCache();
@@ -75,7 +74,7 @@ public final class Barium extends JavaPlugin {
                 this
         );
 
-        logger.info("Registered events");
+        LOGGER.info("Registered events");
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(this,
                 new CacheSyncTask(playerCache, accountRepository),
@@ -91,7 +90,7 @@ public final class Barium extends JavaPlugin {
                 }
         );
 
-        logger.info("Barium init done");
+        LOGGER.info("Barium init done");
     }
 
     @Override

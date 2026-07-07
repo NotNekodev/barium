@@ -30,7 +30,7 @@ public class Database {
             return t;
         });
 
-        Barium.getInstance().logger.info("Connected to SQLite database {}", file.getAbsolutePath());
+        Barium.LOGGER.info("Connected to SQLite database {}", file.getAbsolutePath());
     }
 
     public void close() {
@@ -39,10 +39,10 @@ public class Database {
 
             try {
                 if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
-                    Barium.getInstance().logger.error("Failed to shutdown database executor service in time!");
+                    Barium.LOGGER.error("Failed to shutdown database executor service in time!");
                 }
             } catch (InterruptedException e) {
-                Barium.getInstance().logger.warn("Failed to shutdown executor service during database closing: {}", e.getMessage());
+                Barium.LOGGER.warn("Failed to shutdown executor service during database closing: {}", e.getMessage());
             }
         }
 
@@ -50,7 +50,7 @@ public class Database {
             try {
                 connection.close();
             } catch (SQLException e) {
-                Barium.getInstance().logger.warn("Failed to close SQLite database: {}", e.getMessage());
+                Barium.LOGGER.warn("Failed to close SQLite database: {}", e.getMessage());
             }
         }
     }
@@ -66,7 +66,7 @@ public class Database {
 
                 statement.execute();
             } catch (SQLException e) {
-                Barium.getInstance().logger.warn("Failed to execute SQL command: {} ({})", e.getMessage(), e.getSQLState());
+                Barium.LOGGER.warn("Failed to execute SQL command: {} ({})", e.getMessage(), e.getSQLState());
                 throw new CompletionException(e);
             }
         }, executor);
@@ -81,7 +81,7 @@ public class Database {
                     return mapper.map(resultSet);
                 }
             } catch (SQLException e) {
-                Barium.getInstance().logger.warn("Failed to query SQL: {} ({})", e.getMessage(), e.getSQLState());
+                Barium.LOGGER.warn("Failed to query SQL: {} ({})", e.getMessage(), e.getSQLState());
                 throw new CompletionException(e);
             }
         }, executor);
@@ -94,7 +94,7 @@ public class Database {
 
                 return statement.executeUpdate();
             } catch (SQLException e) {
-                Barium.getInstance().logger.warn("Failed to update SQL call: {} ({})", e.getMessage(), e.getSQLState());
+                Barium.LOGGER.warn("Failed to update SQL call: {} ({})", e.getMessage(), e.getSQLState());
                 throw new CompletionException(e);
             }
         }, executor);
@@ -109,7 +109,7 @@ public class Database {
                     statement.addBatch();
                 }
             } catch (SQLException e) {
-                Barium.getInstance().logger.warn("Failed to batch SQL calls: {} ({})", e.getMessage(), e.getSQLState());
+                Barium.LOGGER.warn("Failed to batch SQL calls: {} ({})", e.getMessage(), e.getSQLState());
                 throw new CompletionException(e);
             }
         }, executor);
@@ -122,11 +122,11 @@ public class Database {
                 transaction.execute(connection);
                 connection.commit();
             } catch (Exception e) {
-                Barium.getInstance().logger.warn("Failed to complete transaction: {}", e.getMessage());
+                Barium.LOGGER.warn("Failed to complete transaction: {}", e.getMessage());
                 try {
                     connection.rollback();
                 } catch (SQLException ex) {
-                    Barium.getInstance().logger.warn("Failed to rollback during error in transaction: {} ({})", e.getMessage(), ex.getSQLState());
+                    Barium.LOGGER.warn("Failed to rollback during error in transaction: {} ({})", e.getMessage(), ex.getSQLState());
                 }
 
                 throw new CompletionException(e);
@@ -134,7 +134,7 @@ public class Database {
                 try {
                     connection.setAutoCommit(true);
                 } catch (SQLException e) {
-                    Barium.getInstance().logger.warn("Failed to reactivate auto commiting after transaction: {} ({})", e.getMessage(), e.getSQLState());
+                    Barium.LOGGER.warn("Failed to reactivate auto commiting after transaction: {} ({})", e.getMessage(), e.getSQLState());
                 }
             }
         }, executor);

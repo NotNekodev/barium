@@ -28,7 +28,7 @@ public class JoinListener implements Listener {
         repo.create(uuid).thenCompose(v -> repo.find(uuid)).thenAccept(account -> {
             if (account == null) {
                 // in theory we shouldn't get here
-                Barium.getInstance().logger.warn("Account still null, even after creating (and ignoration)!");
+                Barium.LOGGER.warn("Account still null, even after creating (and ignoration)!");
                 account = new Account(uuid, Barium.getInstance().getConfig().getInt("currency.starting_balance", 500));
                 repo.save(account);
             }

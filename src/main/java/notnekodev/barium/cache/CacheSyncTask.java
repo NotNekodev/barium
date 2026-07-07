@@ -26,7 +26,7 @@ public class CacheSyncTask implements Runnable {
         }
 
         if (syncedAccs > 0) {
-            Barium.getInstance().logger.info("Synced cache with on-disk SQL database ({} accounts)", syncedAccs);
+            Barium.LOGGER.info("Synced cache with on-disk SQL database ({} accounts)", syncedAccs);
         }
     }
 }
