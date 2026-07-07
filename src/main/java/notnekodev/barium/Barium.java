@@ -98,16 +98,4 @@ public final class Barium extends JavaPlugin {
         db.close();
         INSTANCE = null;
     }
-
-    public EconomyService getEconomyService() {
-        return this.economyService;
-    }
-
-    public AccountRepository getAccountRepository() {
-        return this.accountRepository;
-    }
-
-    public PlayerCache getPlayerCache() {
-        return this.playerCache;
-    }
 }
