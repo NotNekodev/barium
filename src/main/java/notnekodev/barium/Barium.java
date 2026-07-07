@@ -12,7 +12,6 @@ import notnekodev.barium.listener.QuitListener;
 import notnekodev.barium.repository.AccountRepository;
 import notnekodev.barium.repository.SQLiteAccountRepository;
 import notnekodev.barium.service.EconomyService;
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +21,9 @@ import java.sql.SQLException;
 public final class Barium extends JavaPlugin {
 
     public static Barium INSTANCE = null;
+
     private Database db;
+    private CacheSyncTask cacheSyncTask;
 
     public static Logger LOGGER = LoggerFactory.getLogger("barium");
 
@@ -66,6 +67,9 @@ public final class Barium extends JavaPlugin {
         playerCache = new PlayerCache();
         economyService = new EconomyService(playerCache);
 
+        cacheSyncTask = new CacheSyncTask(playerCache, accountRepository);
+        Thread syncTaskThread = new Thread(cacheSyncTask, "barium-cache-sync");
+
         getServer().getPluginManager().registerEvents(
                 new JoinListener(accountRepository, playerCache),
                 this
@@ -78,10 +82,7 @@ public final class Barium extends JavaPlugin {
 
         LOGGER.info("Registered events");
 
-        Bukkit.getScheduler().runTaskTimerAsynchronously(this,
-                new CacheSyncTask(playerCache, accountRepository),
-                20L * 60 * getConfig().getInt("database.cache_sync", 1),
-                20L * 60 * getConfig().getInt("database.cache_sync", 1));
+        syncTaskThread.start();
 
         this.getLifecycleManager().registerEventHandler(
                 LifecycleEvents.COMMANDS,
@@ -104,6 +105,7 @@ public final class Barium extends JavaPlugin {
     @Override
     public void onDisable() {
         db.close();
+        cacheSyncTask.stop();
         INSTANCE = null;
     }
 }

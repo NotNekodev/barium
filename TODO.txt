@@ -1,7 +1,7 @@
 todos:
 - make the caches more general, so use a Cache<T> or CacheItem<T> (useful when we later need caches for other features like shops)
-- add more basic commands (/transfer, /bal, etc.)
 - shop system with inventory gui and such (figure out how do manage supply (maybe link chests somehow?))
 - bank system maybe? (hypixel skyblock style but idrk yet)
 - document more with javadoc
 - document everything in the README
+.
