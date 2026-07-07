@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public class QuitListener implements Listener {
     private final AccountRepository repo;
-    private PlayerCache playerCache;
+    private final PlayerCache playerCache;
 
     public QuitListener(AccountRepository repo, PlayerCache playerCache) {
         this.repo = repo;

@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public class JoinListener implements Listener {
     private final AccountRepository repo;
-    private PlayerCache playerCache;
+    private final PlayerCache playerCache;
 
     public JoinListener(AccountRepository repo, PlayerCache playerCache) {
         this.repo = repo;

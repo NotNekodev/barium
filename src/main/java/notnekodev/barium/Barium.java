@@ -1,15 +1,17 @@
 package notnekodev.barium;
 
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import notnekodev.barium.cache.CacheSyncTask;
 import notnekodev.barium.cache.PlayerCache;
+import notnekodev.barium.command.AdminBalanceCommand;
 import notnekodev.barium.database.Database;
 import notnekodev.barium.listener.JoinListener;
 import notnekodev.barium.listener.QuitListener;
 import notnekodev.barium.repository.AccountRepository;
 import notnekodev.barium.repository.SQLiteAccountRepository;
+import notnekodev.barium.service.EconomyService;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,14 +19,22 @@ import java.sql.SQLException;
 
 public final class Barium extends JavaPlugin {
 
-    private static Barium instance;
+    private static Barium instance = null;
     private Database db;
 
     public Logger logger;
 
+    public EconomyService economyService;
+    public AccountRepository accountRepository;
+    public PlayerCache playerCache;
+
     @Override
     public void onEnable() {
-        instance = this; // singleton shenanigans
+        if (instance != null) {
+            throw new RuntimeException("Other instance of barium is already running!");
+        }
+
+        instance = this;
 
         logger = LoggerFactory.getLogger("barium");
         logger.info("Barium enabled");
@@ -51,8 +61,9 @@ public final class Barium extends JavaPlugin {
 
         logger.info("Set up SQLite database at {}", db_path);
 
-        AccountRepository accountRepository = new SQLiteAccountRepository(db);
-        PlayerCache playerCache = new PlayerCache();
+        accountRepository = new SQLiteAccountRepository(db);
+        playerCache = new PlayerCache();
+        economyService = new EconomyService(playerCache);
 
         getServer().getPluginManager().registerEvents(
                 new JoinListener(accountRepository, playerCache),
@@ -71,6 +82,15 @@ public final class Barium extends JavaPlugin {
                 20L * 60 * getConfig().getInt("database.cache_sync", 1),
                 20L * 60 * getConfig().getInt("database.cache_sync", 1));
 
+        this.getLifecycleManager().registerEventHandler(
+                LifecycleEvents.COMMANDS,
+                commands -> {
+                    commands.registrar().register(
+                            AdminBalanceCommand.createCommand().build()
+                    );
+                }
+        );
+
         logger.info("Barium init done");
     }
 
@@ -82,5 +102,17 @@ public final class Barium extends JavaPlugin {
 
     public static Barium getInstance() {
         return instance;
+    }
+
+    public EconomyService getEconomyService() {
+        return this.economyService;
+    }
+
+    public AccountRepository getAccountRepository() {
+        return this.accountRepository;
+    }
+
+    public PlayerCache getPlayerCache() {
+        return this.playerCache;
     }
 }

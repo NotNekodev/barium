@@ -1,0 +1,9 @@
+This file is here to document needed permissions for each command
+
+barium.economy.balance -> defines if you can view your balance
+barium.economy.transfer -> defines if you can transfer money to another player
+
+barium.economy.admin.get -> defines the admin power to view other players balance
+barium.economy.admin.set -> defines the admin power to set other players balance
+barium.economy.admin.add -> defines the admin power to add balance to another player
+barium.economy.admin.remove -> defines the admin power to remove balance from another player
