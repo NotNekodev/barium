@@ -29,7 +29,7 @@ public class JoinListener implements Listener {
             if (account == null) {
                 // in theory we shouldn't get here
                 Barium.LOGGER.warn("Account still null, even after creating (and ignoration)!");
-                account = new Account(uuid, Barium.getInstance().getConfig().getInt("currency.starting_balance", 500));
+                account = new Account(uuid, Barium.INSTANCE.getConfig().getInt("currency.starting_balance", 500));
                 repo.save(account);
             }
 
@@ -38,9 +38,9 @@ public class JoinListener implements Listener {
         });
 
         repo.find(uuid).thenAccept(account -> {
-            Bukkit.getScheduler().runTask(Barium.getInstance(), () -> {
+            Bukkit.getScheduler().runTask(Barium.INSTANCE, () -> {
                 event.getPlayer().sendMessage("Balance: " + account.getBalance()
-                        + Barium.getInstance().getConfig().getString("currency.symbol"));
+                        + Barium.INSTANCE.getConfig().getString("currency.symbol"));
             });
         });
     }

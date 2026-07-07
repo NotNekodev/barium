@@ -155,14 +155,14 @@ public class AdminBalanceCommand {
         UUID targetUUID = target.getUniqueId();
 
         // interact with the economy service
-        long bal = Barium.getInstance().economyService.getBalance(targetUUID);
+        long bal = Barium.INSTANCE.economyService.getBalance(targetUUID);
 
         // send an update message to the sender, with the new balance
         ctx.getSource().getSender().sendRichMessage("Balance of <green><entityname><white> is <gold><balance><currencysign>",
                 Placeholder.component("entityname", entities.getFirst().name()),
                 Placeholder.component("balance", Component.text().content(Long.toString(bal))),
                 Placeholder.component("currencysign",
-                        Component.text().content(Barium.getInstance().getConfig().getString("currency.symbol", "$")))
+                        Component.text().content(Barium.INSTANCE.getConfig().getString("currency.symbol", "$")))
         );
 
         return Command.SINGLE_SUCCESS;
@@ -187,10 +187,10 @@ public class AdminBalanceCommand {
 
         // get the uuid and current balance
         UUID targetUUID = target.getUniqueId();
-        long balance = Barium.getInstance().economyService.getBalance(targetUUID);
+        long balance = Barium.INSTANCE.economyService.getBalance(targetUUID);
 
         // update the balance using the economy service
-        Barium.getInstance().economyService.setBalance(targetUUID, amount);
+        Barium.INSTANCE.economyService.setBalance(targetUUID, amount);
 
         // send a detailed message to the sender
         ctx.getSource().getSender().sendRichMessage(
@@ -198,7 +198,7 @@ public class AdminBalanceCommand {
                 Placeholder.component("entityname", entities.getFirst().name()),
                 Placeholder.component("balance", Component.text().content(Long.toString(balance))),
                 Placeholder.component("currencysign",
-                        Component.text().content(Barium.getInstance().getConfig().getString("currency.symbol", "$"))),
+                        Component.text().content(Barium.INSTANCE.getConfig().getString("currency.symbol", "$"))),
                 Placeholder.component("newbalance", Component.text().content(Integer.toString(amount)))
         );
 
@@ -226,7 +226,7 @@ public class AdminBalanceCommand {
         UUID targetUUID = target.getUniqueId();
 
         // update the players balance using the economy service
-        Barium.getInstance().economyService.addBalance(targetUUID, amount);
+        Barium.INSTANCE.economyService.addBalance(targetUUID, amount);
 
         // send a detailed response to the sender
         ctx.getSource().getSender().sendRichMessage(
@@ -234,9 +234,9 @@ public class AdminBalanceCommand {
                         "<gold><newbalance><currencysign>",
                 Placeholder.component("entityname", entities.getFirst().name()),
                 Placeholder.component("currencysign",
-                        Component.text().content(Barium.getInstance().getConfig().getString("currency.symbol", "$"))),
+                        Component.text().content(Barium.INSTANCE.getConfig().getString("currency.symbol", "$"))),
                 Placeholder.component("newbalance",
-                        Component.text().content(Long.toString( Barium.getInstance().economyService.getBalance(targetUUID)))),
+                        Component.text().content(Long.toString( Barium.INSTANCE.economyService.getBalance(targetUUID)))),
                 Placeholder.component("amount", Component.text().content(Integer.toString(amount)))
         );
 
@@ -262,7 +262,7 @@ public class AdminBalanceCommand {
 
         // get the players UUID and current balance
         UUID targetUUID = target.getUniqueId();
-        long balance = Barium.getInstance().economyService.getBalance(targetUUID);
+        long balance = Barium.INSTANCE.economyService.getBalance(targetUUID);
 
         // calculate the new balance and clamp to zero if needed. i dont want debt in this plugin at the moment
         long new_balance = balance - amount;
@@ -271,7 +271,7 @@ public class AdminBalanceCommand {
         }
 
         // update the balance using the economyService
-        Barium.getInstance().economyService.setBalance(targetUUID, new_balance);
+        Barium.INSTANCE.economyService.setBalance(targetUUID, new_balance);
 
         // send a detailed response to the sender
         ctx.getSource().getSender().sendRichMessage(
@@ -279,7 +279,7 @@ public class AdminBalanceCommand {
                         "<gold><newbalance><currencysign>",
                 Placeholder.component("entityname", entities.getFirst().name()),
                 Placeholder.component("currencysign",
-                        Component.text().content(Barium.getInstance().getConfig().getString("currency.symbol", "$"))),
+                        Component.text().content(Barium.INSTANCE.getConfig().getString("currency.symbol", "$"))),
                 Placeholder.component("newbalance", Component.text().content(Long.toString(new_balance))),
                 Placeholder.component("amount", Component.text().content(Integer.toString(amount)))
         );

@@ -35,7 +35,7 @@ public class SQLiteAccountRepository implements AccountRepository {
         return db.execute(
                 "INSERT OR IGNORE INTO accounts(uuid, balance) VALUES(?, ?)",
                 uuid.toString(),
-                Barium.getInstance().getConfig().getInt("currency.starting_balance", 500)
+                Barium.INSTANCE.getConfig().getInt("currency.starting_balance", 500)
         );
     }
 

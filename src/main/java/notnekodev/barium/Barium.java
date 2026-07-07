@@ -19,7 +19,7 @@ import java.sql.SQLException;
 
 public final class Barium extends JavaPlugin {
 
-    private static Barium instance = null;
+    public static Barium INSTANCE = null;
     private Database db;
 
     public static Logger LOGGER = LoggerFactory.getLogger("barium");
@@ -30,11 +30,11 @@ public final class Barium extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        if (instance != null) {
-            throw new RuntimeException("Other instance of barium is already running!");
+        if (INSTANCE != null) {
+            throw new RuntimeException("Another instance of barium is already running!");
         }
 
-        instance = this;
+        INSTANCE = this;
 
         LOGGER.info("Barium enabled");
 
@@ -96,11 +96,7 @@ public final class Barium extends JavaPlugin {
     @Override
     public void onDisable() {
         db.close();
-        instance = null;
-    }
-
-    public static Barium getInstance() {
-        return instance;
+        INSTANCE = null;
     }
 
     public EconomyService getEconomyService() {
