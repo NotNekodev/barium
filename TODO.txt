@@ -4,4 +4,3 @@ todos:
 - bank system maybe? (hypixel skyblock style but idrk yet)
 - document more with javadoc
 - document everything in the README
-- user papers thread safe api to update command suggestions ever 5 or so minutes and when a player joins / quits (using Thread.interrupt())
