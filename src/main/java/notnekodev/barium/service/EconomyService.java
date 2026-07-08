@@ -1,8 +1,8 @@
 package notnekodev.barium.service;
 
 import notnekodev.barium.Barium;
-import notnekodev.barium.cache.CachedAccount;
 import notnekodev.barium.cache.PlayerCache;
+import notnekodev.barium.model.Account;
 
 import java.util.UUID;
 
@@ -27,8 +27,8 @@ public class EconomyService {
      * @return The balance of the player or 0
      */
     public long getBalance(UUID uuid) {
-        CachedAccount acc = playerCache.get(uuid);
-        return acc != null ? acc.get().getBalance() : 0;
+        Account acc = playerCache.get(uuid).get();
+        return acc != null ? acc.getBalance() : 0;
     }
 
     /**
@@ -37,11 +37,9 @@ public class EconomyService {
      * @param amount The new balance of the players account
      */
     public void setBalance(UUID uuid, long amount) {
-        CachedAccount acc = playerCache.get(uuid);
-        if (acc != null) {
-            acc.get().setBalance(amount);
-            acc.markDirty();
-        }
+        playerCache.get(uuid).update(account -> {
+            account.setBalance(amount);
+        });
     }
 
     /**
@@ -50,10 +48,9 @@ public class EconomyService {
      * @param amount The amount to be added
      */
     public void addBalance(UUID uuid, long amount) {
-        CachedAccount acc = playerCache.get(uuid);
-        if (acc != null) {
-            acc.deposit(amount);
-        }
+        playerCache.get(uuid).update(account -> {
+            account.add(amount);
+        });
     }
 
     /**
@@ -64,16 +61,21 @@ public class EconomyService {
      * @return 0 on success, 1 on invalid UUIDs, 2 if the players balance isn't enough and 3 if the amount is invalid
      */
     public int transfer(UUID from, UUID to, long amount) {
-        CachedAccount sender = playerCache.get(from);
-        CachedAccount receiver = playerCache.get(to);
+        Account sender = playerCache.get(from).get();
+        Account receiver = playerCache.get(to).get();
 
         if (sender == null || receiver == null) return 1;
-        if (sender.get().getBalance() < amount) return 2;
+        if (sender.getBalance() < amount) return 2;
 
         if (amount <= 0) return 3;
 
-        sender.withdraw(amount);
-        receiver.deposit(amount);
+        playerCache.get(from).update(account -> {
+            account.subtract(amount);
+        });
+
+        playerCache.get(to).update(account -> {
+            account.add(amount);
+        });
 
         return 0;
     }

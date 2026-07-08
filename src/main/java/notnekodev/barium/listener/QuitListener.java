@@ -1,6 +1,5 @@
 package notnekodev.barium.listener;
 
-import notnekodev.barium.cache.CachedAccount;
 import notnekodev.barium.cache.PlayerCache;
 import notnekodev.barium.model.Account;
 import notnekodev.barium.repository.AccountRepository;
@@ -23,10 +22,9 @@ public class QuitListener implements Listener {
     public void onQuit(PlayerQuitEvent event) {
         UUID uuid = event.getPlayer().getUniqueId();
 
-        CachedAccount cached = playerCache.get(uuid);
-        if (cached == null) return;
+        playerCache.get(uuid);
 
-        Account acc = cached.get();
+        Account acc = playerCache.get(uuid).get();
 
         repo.save(acc).thenRun(() -> playerCache.remove(uuid));
     }

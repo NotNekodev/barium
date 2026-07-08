@@ -1,29 +1,20 @@
 package notnekodev.barium.cache;
 
-import java.util.Map;
+import notnekodev.barium.model.Account;
+import notnekodev.barium.repository.AccountRepository;
+
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CompletableFuture;
 
-public class PlayerCache {
-    private final Map<UUID, CachedAccount> cache = new ConcurrentHashMap<>();
+public class PlayerCache extends AbstractCache<UUID, Account> {
+    private final AccountRepository repository;
 
-    public void put(UUID uuid, CachedAccount account) {
-        cache.put(uuid, account);
+    public PlayerCache(AccountRepository repository) {
+        this.repository = repository;
     }
 
-    public CachedAccount get(UUID uuid) {
-        return cache.get(uuid);
-    }
-
-    public void remove(UUID uuid) {
-        cache.remove(uuid);
-    }
-
-    public Map<UUID, CachedAccount> all() {
-        return cache;
-    }
-
-    public boolean contains(UUID uuid) {
-        return cache.containsKey(uuid);
+    @Override
+    protected CompletableFuture<Void> save(Account value) {
+        return repository.save(value);
     }
 }

@@ -64,10 +64,11 @@ public final class Barium extends JavaPlugin {
         LOGGER.info("Set up SQLite database at {}", db_path);
 
         accountRepository = new SQLiteAccountRepository(db);
-        playerCache = new PlayerCache();
+        playerCache = new PlayerCache(accountRepository);
         economyService = new EconomyService(playerCache);
 
-        cacheSyncTask = new CacheSyncTask(playerCache, accountRepository);
+        cacheSyncTask = new CacheSyncTask();
+        cacheSyncTask.addSyncableCache(playerCache);
         Thread syncTaskThread = new Thread(cacheSyncTask, "barium-cache-sync");
 
         getServer().getPluginManager().registerEvents(

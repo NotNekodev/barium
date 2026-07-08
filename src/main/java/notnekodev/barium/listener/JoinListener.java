@@ -1,7 +1,6 @@
 package notnekodev.barium.listener;
 
 import notnekodev.barium.Barium;
-import notnekodev.barium.cache.CachedAccount;
 import notnekodev.barium.cache.PlayerCache;
 import notnekodev.barium.model.Account;
 import notnekodev.barium.repository.AccountRepository;
@@ -33,8 +32,7 @@ public class JoinListener implements Listener {
                 repo.save(account);
             }
 
-            CachedAccount cached = new CachedAccount(account);
-            playerCache.put(uuid, cached);
+            playerCache.put(uuid, account);
         });
 
         repo.find(uuid).thenAccept(account -> {
