@@ -25,4 +25,8 @@ downloads the paper jar and runs a test server on localhost (mostly useful for d
 ```
 
 ## usage
-todo
+to use barium build the plugin using the plugins/ directory. on first boot it will copy the default configuration from the jar into the plugins paper config directory
+
+the config file has comments that explain what each config value does
+
+you can use a plugin like luckperms to set each players permissions according to permissions.txt
